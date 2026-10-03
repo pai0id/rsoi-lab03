@@ -17,7 +17,17 @@ jobs:
 
       - uses: docker/setup-buildx-action@v2
 
-      # TODO build and run unit tests
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install and run unit tests
+        run: |
+          for service in flight-service ticket-service bonus-service gateway-service; do
+            echo "== $service =="
+            npm --prefix "$service" install
+            npm --prefix "$service" test
+          done
 
       - name: Build images
         timeout-minutes: 10
@@ -31,15 +41,18 @@ jobs:
         env:
           WAIT_PORTS: 8080,8070,8060,8050
 
-      # TODO setup variant, service and port
+      - name: Install newman
+        run: npm install -g newman
 
       - name: Run API Tests
         timeout-minutes: 5
-        run: ./scripts/test-script.sh
+        run: |
+          chmod +x scripts/*.sh
+          ./scripts/test-script.sh
         env:
-          VARIANT: <variant>
-          SERVICE_NAME: <your service name>
-          PORT_NUMBER: <port number>
+          VARIANT: v1
+          SERVICE_NAME: bonus-service
+          PORT_NUMBER: 8050
 
       - uses: education/autograding@v1
         id: autograder
