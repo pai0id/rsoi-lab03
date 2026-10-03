@@ -1,6 +1,3 @@
-// In-memory queue that retries a failing compensating task until it succeeds.
-// Used for the ticket-cancellation flow: if Bonus Service is down, the user still
-// gets a success response and the bonus rollback is queued for later retry.
 function createRetryQueue({ intervalMs = 2000 } = {}) {
   const queue = [];
   let timer = null;
@@ -17,7 +14,6 @@ function createRetryQueue({ intervalMs = 2000 } = {}) {
         queue.shift();
       })
       .catch(() => {
-        // keep at the head of the queue, retried on the next tick
       });
   }
 

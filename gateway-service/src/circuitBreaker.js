@@ -1,8 +1,5 @@
 const STATE = Object.freeze({ CLOSED: "CLOSED", OPEN: "OPEN", HALF_OPEN: "HALF_OPEN" });
 
-// Classic Circuit Breaker for read operations: after `failureThreshold` consecutive
-// failures the breaker opens and short-circuits calls with a fallback. After
-// `resetTimeoutMs` it lets a single probe call through (half-open) to check recovery.
 class CircuitBreaker {
   constructor({ failureThreshold = 3, resetTimeoutMs = 1000 } = {}) {
     this.failureThreshold = failureThreshold;
